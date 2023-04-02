@@ -1,12 +1,13 @@
 import { Flex } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';
 
+import Header from 'components/layout/Header';
 import Container from 'components/layout/Container';
 
 const layoutSettings = {
   heights: {
-    header: '10vh',
-    container: '90vh',
+    header: ['20vh', '10vh'],
+    container: ['80vh', '90vh'],
   },
   paddings: {
     x: {
@@ -25,6 +26,7 @@ const layoutSettings = {
 function Layout() {
   return (
     <Flex flexDirection="column" minH="100vh">
+      <Header height={layoutSettings.heights.header} paddings={layoutSettings.paddings} />
       <Container minH={layoutSettings.heights.container} paddings={layoutSettings.paddings}>
         <Outlet />
       </Container>
