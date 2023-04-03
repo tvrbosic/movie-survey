@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import Header from 'components/layout/Header';
 import Container from 'components/layout/Container';
 
-const layoutSettings = {
+export const layoutSettings = {
   heights: {
     header: ['20vh', '10vh'],
     container: ['80vh', '90vh'],
