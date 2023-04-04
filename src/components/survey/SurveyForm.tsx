@@ -3,7 +3,7 @@ import { FormControl, FormLabel, Input, ButtonGroup, Button } from '@chakra-ui/r
 import { useForm } from 'react-hook-form';
 
 import { useFetchData } from 'hooks/useFetchData';
-import { ISurvey } from 'ts/definitions';
+import { ISurvey, ISurveyQuestion } from 'ts/definitions';
 import FormHeader from 'components/survey/FormHeader';
 import HorizontalLine from 'components/HorizontalLine';
 
@@ -13,7 +13,7 @@ export default function SurveyForm() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm<ISurveyQuestion[]>();
   const { data, isLoading, isError, sendRequest } = useFetchData<ISurvey>();
 
   useEffect(() => {
@@ -38,23 +38,16 @@ export default function SurveyForm() {
           />
           <HorizontalLine my="30px" />
 
-          <FormControl>
-            <FormLabel htmlFor="film">What film did you watch?</FormLabel>
-            <Input
-              {...register('film', {
-                required: 'Film field must not be empty!',
-              })}
-            />
-          </FormControl>
-
-          <FormControl mt="30px">
-            <FormLabel htmlFor="rating">How would you rate the film?</FormLabel>
-            <Input
-              {...register('rating', {
-                required: 'Rating field must not be empty!',
-              })}
-            />
-          </FormControl>
+          {data.data.attributes.questions.map((question, index) => (
+            <FormControl key={index} mb="20px">
+              <FormLabel htmlFor={question.questionId}>{question.label}</FormLabel>
+              <Input
+                {...register(`${index}.questionId`, { required: true })}
+                type="text"
+                placeholder="Enter your answer"
+              />
+            </FormControl>
+          ))}
 
           <HorizontalLine mt="50px" mb="30px" />
           <ButtonGroup w="100%" justifyContent="center">
