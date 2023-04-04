@@ -17,7 +17,7 @@ const internalServerErrorResponse = (res) => {
 };
 
 app.get('/api/v1/survey', (req, res) => {
-  const file = path.join(process.cwd(), 'data', 'survey.json');
+  const file = path.join(process.cwd(), '/../data', 'survey.json');
 
   fs.readFile(file, 'utf8', (err, data) => {
     if (err) {
