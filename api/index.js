@@ -5,6 +5,36 @@ const path = require('path');
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+const surveyMockData = {
+  data: {
+    type: 'surveys',
+    attributes: {
+      title: 'Film feedback form',
+      description:
+        '<p>Thank you for participating in the film festival!</p><p>Please fill out this short survey so we can record your feedback.</p>',
+      questions: [
+        {
+          questionId: 'film',
+          questionType: 'text',
+          label: 'What film did you watch?',
+          required: true,
+          attributes: null,
+        },
+        {
+          questionId: 'review',
+          questionType: 'rating',
+          label: 'How would you rate the film? (1 - Very bad, 5 - Very good)',
+          required: true,
+          attributes: {
+            min: 1,
+            max: 5,
+          },
+        },
+      ],
+    },
+  },
+};
+
 const internalServerErrorResponse = (res) => {
   res.status(500).json({
     errors: [
@@ -17,23 +47,9 @@ const internalServerErrorResponse = (res) => {
 };
 
 app.get('/api/v1/survey', (req, res) => {
-  const file = path.join(process.cwd(), '/../data', 'survey.json');
-
-  fs.readFile(file, 'utf8', (err, data) => {
-    if (err) {
-      // Error reading file
-      internalServerErrorResponse(res);
-      return;
-    }
-
-    try {
-      const jsonData = JSON.parse(data);
-      return res.json(jsonData);
-    } catch (error) {
-      // Error parsing JSON
-      internalServerErrorResponse(res);
-    }
-  });
+  // Mock error response
+  // internalServerErrorResponse(res);
+  return res.json(surveyMockData);
 });
 
 app.listen(PORT, () => {
