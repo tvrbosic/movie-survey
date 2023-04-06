@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEventHandler } from 'react';
+import { useState } from 'react';
 import { Flex, Icon } from '@chakra-ui/react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 
@@ -19,9 +19,8 @@ interface IStarIconProps {
 
 const StarIcon = ({ type, mouseEnterHandler, mouseLeaveHandler, onClick }: IStarIconProps) => (
   <Icon
-    width="75px"
-    height="60px"
-    pr={'15px'}
+    boxSize={['55px', '70px', '75px']}
+    pr={['5px', '10px', '15px']}
     color={'yellow.300'}
     _hover={{ cursor: 'pointer' }}
     onMouseEnter={mouseEnterHandler}
@@ -61,7 +60,7 @@ export default function RatingControl({ attributes, onValueChange }: IRatingCont
   ));
 
   return (
-    <Flex w={'100%'} mt={'10px'}>
+    <Flex w={'100%'} mt={'10px'} justifyContent={'center'}>
       {renderIcons}
     </Flex>
   );

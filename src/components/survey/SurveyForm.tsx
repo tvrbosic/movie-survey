@@ -14,7 +14,6 @@ export default function SurveyForm() {
     handleSubmit,
     control,
     formState: { errors },
-    getValues,
   } = useForm<ISurveyQuestion[]>();
   const { data, isLoading, isError, sendRequest } = useFetchData<ISurvey>();
 
@@ -45,10 +44,13 @@ export default function SurveyForm() {
               case 'text':
                 return (
                   <FormControl key={index} mb="20px">
-                    <FormLabel htmlFor={question.questionId}>{question.label}</FormLabel>
+                    <FormLabel htmlFor={question.questionId} color="gray.600">
+                      {question.label}
+                    </FormLabel>
                     <Input
                       {...register(`${index}.questionId`, { required: true })}
                       type="text"
+                      variant="filled"
                       placeholder="Enter your answer"
                     />
                   </FormControl>
@@ -56,7 +58,9 @@ export default function SurveyForm() {
               case 'rating':
                 return (
                   <FormControl key={index} mb="20px">
-                    <FormLabel htmlFor={question.questionId}>{question.label}</FormLabel>
+                    <FormLabel htmlFor={question.questionId} color="gray.600">
+                      {question.label}
+                    </FormLabel>
                     <Controller
                       control={control}
                       name={`${index}.questionId`}
