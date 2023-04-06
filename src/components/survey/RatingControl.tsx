@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEventHandler } from 'react';
+import { useState } from 'react';
 import { Flex, Icon } from '@chakra-ui/react';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 
@@ -7,6 +7,7 @@ interface IRatingControlProps {
     min: number;
     max: number;
   };
+  validationError: boolean;
   onValueChange: (value: number) => void;
 }
 
@@ -19,20 +20,22 @@ interface IStarIconProps {
 
 const StarIcon = ({ type, mouseEnterHandler, mouseLeaveHandler, onClick }: IStarIconProps) => (
   <Icon
-    width="75px"
-    height="60px"
-    pr={'15px'}
+    as={type === 'fill' ? AiFillStar : AiOutlineStar}
+    flexGrow={1}
+    boxSize={['35px', '40px', '45px']}
     color={'yellow.300'}
     _hover={{ cursor: 'pointer' }}
     onMouseEnter={mouseEnterHandler}
     onMouseLeave={mouseLeaveHandler}
     onClick={onClick}
-  >
-    {type === 'fill' ? <AiFillStar /> : <AiOutlineStar />}
-  </Icon>
+  />
 );
 
-export default function RatingControl({ attributes, onValueChange }: IRatingControlProps) {
+export default function RatingControl({
+  attributes,
+  validationError,
+  onValueChange,
+}: IRatingControlProps) {
   const [fillCount, setFillCount] = useState(0);
   const [rating, setRating] = useState(0);
 
@@ -61,7 +64,16 @@ export default function RatingControl({ attributes, onValueChange }: IRatingCont
   ));
 
   return (
-    <Flex w={'100%'} mt={'10px'}>
+    <Flex
+      w={'100%'}
+      mt={'10px'}
+      px={['10px', '20px', '30px']}
+      py={['5px', '10px', '15px']}
+      justifyContent={'space-around'}
+      border={validationError ? '2px solid' : 'none'}
+      borderColor={'red.500'}
+      borderRadius={'8px'}
+    >
       {renderIcons}
     </Flex>
   );

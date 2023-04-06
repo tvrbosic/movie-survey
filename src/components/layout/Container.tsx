@@ -11,9 +11,9 @@ function Container({ children, paddings, ...rest }: ContainerProps) {
   return (
     <Flex flexDirection="column" bg="gray.100" {...rest}>
       <Box
-        width={['100%', '600px', '800px']}
+        width={['100%', '500px', '600px']}
         mx="auto"
-        my={[0, '30px', '60px']}
+        my={[0, '40px', '60px']}
         px={[paddings.x.sm, paddings.x.md, paddings.x.lg]}
         py={[paddings.y.sm, paddings.y.md, paddings.y.lg]}
         bg="white"

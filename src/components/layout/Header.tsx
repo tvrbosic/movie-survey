@@ -9,33 +9,24 @@ interface HeaderProps extends FlexProps {
 
 function Header({ paddings, ...rest }: HeaderProps) {
   return (
-    <Flex flexDirection="column" bgGradient="linear(to-r, cyan.200, green.200)" {...rest}>
+    <Flex flexDirection="column" bgGradient="linear(to-r, green.200, cyan.200)" {...rest}>
       <Flex
-        position="relative"
-        width={['100%', '600px', '800px']}
+        width={['100%', '500px', '600px']}
         h="100%"
         mx="auto"
-        px="15px"
+        px={[0, '20px', '40px']}
         alignItems="center"
-        justifyContent={['center', 'flex-start']}
+        justifyContent={['center', 'space-between']}
         flexDirection={['column', 'row']}
       >
         <Image
-          height={['25%', '70%']}
-          position={['relative', 'absolute']}
+          height={['30%', '40%', '50%']}
           src={LogoIpsum}
           objectFit="contain"
-          alt="Grassroots Logo"
+          alt="Logo ipsum"
         />
-        <Heading
-          as="h1"
-          w="100%"
-          size={['xl', 'lg']}
-          color="gray.700"
-          textAlign="center"
-          mt={['20px', 0]}
-        >
-          Survey
+        <Heading as="h1" size={['md', 'sm']} color="gray.700" textAlign="center" mt={['20px', 0]}>
+          Online Survey
         </Heading>
       </Flex>
     </Flex>
