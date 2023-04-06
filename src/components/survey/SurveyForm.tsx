@@ -1,9 +1,16 @@
 import { useEffect } from 'react';
-import { FormControl, FormLabel, Input, ButtonGroup, Button } from '@chakra-ui/react';
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  FormErrorMessage,
+  ButtonGroup,
+  Button,
+} from '@chakra-ui/react';
 import { useForm, Controller } from 'react-hook-form';
 
 import { useFetchData } from 'hooks/useFetchData';
-import { ISurvey, ISurveyQuestion } from 'ts/definitions';
+import { ISurvey, ISurveyForm } from 'ts/definitions';
 import FormHeader from 'components/survey/FormHeader';
 import RatingControl from 'components/survey/RatingControl';
 import HorizontalLine from 'components/HorizontalLine';
@@ -14,7 +21,7 @@ export default function SurveyForm() {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<ISurveyQuestion[]>();
+  } = useForm<ISurveyForm>();
   const { data, isLoading, isError, sendRequest } = useFetchData<ISurvey>();
 
   useEffect(() => {
@@ -43,36 +50,54 @@ export default function SurveyForm() {
             switch (question.questionType) {
               case 'text':
                 return (
-                  <FormControl key={index} mb="20px">
+                  <FormControl
+                    key={question.questionId}
+                    mb="20px"
+                    isInvalid={!!errors[question.questionId]}
+                  >
                     <FormLabel htmlFor={question.questionId} color="gray.600">
                       {question.label}
                     </FormLabel>
                     <Input
-                      {...register(`${index}.questionId`, { required: true })}
                       type="text"
                       variant="filled"
                       placeholder="Enter your answer"
+                      {...register(question.questionId, {
+                        required: {
+                          value: question.required,
+                          message: 'Answer to this question is required!',
+                        },
+                      })}
                     />
+                    <FormErrorMessage minH={'1rem'}>
+                      {errors[question.questionId] && errors[question.questionId]!.message}
+                    </FormErrorMessage>
                   </FormControl>
                 );
               case 'rating':
                 return (
-                  <FormControl key={index} mb="20px">
+                  <FormControl key={index} mb="20px" isInvalid={!!errors[question.questionId]}>
                     <FormLabel htmlFor={question.questionId} color="gray.600">
                       {question.label}
                     </FormLabel>
                     <Controller
                       control={control}
-                      name={`${index}.questionId`}
-                      rules={{ required: question.required }}
+                      name={question.questionId}
+                      rules={{
+                        required: { value: question.required, message: 'Rating field is required' },
+                      }}
                       render={({ field }) => (
                         <RatingControl
                           key={index}
-                          attributes={question.attributes as { min: number; max: number }}
+                          attributes={question.attributes!}
                           onValueChange={field.onChange}
+                          validationError={!!errors[question.questionId]}
                         />
                       )}
                     />
+                    <FormErrorMessage>
+                      {errors[question.questionId] && errors[question.questionId]!.message}
+                    </FormErrorMessage>
                   </FormControl>
                 );
               default:

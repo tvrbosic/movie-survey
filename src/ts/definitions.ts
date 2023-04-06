@@ -12,7 +12,10 @@ export interface ISurveyQuestion {
   questionType: 'text' | 'rating';
   label: string;
   required: boolean;
-  attributes: Object | null;
+  attributes?: {
+    min: number;
+    max: number;
+  };
 }
 
 export interface ISurvey {
@@ -23,4 +26,8 @@ export interface ISurvey {
       questions: ISurveyQuestion[];
     };
   };
+}
+
+export interface ISurveyForm {
+  [key: string]: string | number | boolean;
 }
