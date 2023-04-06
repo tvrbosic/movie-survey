@@ -1,19 +1,21 @@
 import { useEffect } from 'react';
 import { FormControl, FormLabel, Input, ButtonGroup, Button } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 import { useFetchData } from 'hooks/useFetchData';
-import { ISurvey } from 'ts/definitions';
+import { ISurvey, ISurveyQuestion } from 'ts/definitions';
 import FormHeader from 'components/survey/FormHeader';
+import RatingControl from 'components/survey/RatingControl';
 import HorizontalLine from 'components/HorizontalLine';
 
 export default function SurveyForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
-  } = useForm();
+    getValues,
+  } = useForm<ISurveyQuestion[]>();
   const { data, isLoading, isError, sendRequest } = useFetchData<ISurvey>();
 
   useEffect(() => {
@@ -38,25 +40,43 @@ export default function SurveyForm() {
           />
           <HorizontalLine my="30px" />
 
-          <FormControl>
-            <FormLabel htmlFor="film">What film did you watch?</FormLabel>
-            <Input
-              {...register('film', {
-                required: 'Film field must not be empty!',
-              })}
-            />
-          </FormControl>
+          {data.data.attributes.questions.map((question, index) => {
+            switch (question.questionType) {
+              case 'text':
+                return (
+                  <FormControl key={index} mb="20px">
+                    <FormLabel htmlFor={question.questionId}>{question.label}</FormLabel>
+                    <Input
+                      {...register(`${index}.questionId`, { required: true })}
+                      type="text"
+                      placeholder="Enter your answer"
+                    />
+                  </FormControl>
+                );
+              case 'rating':
+                return (
+                  <FormControl key={index} mb="20px">
+                    <FormLabel htmlFor={question.questionId}>{question.label}</FormLabel>
+                    <Controller
+                      control={control}
+                      name={`${index}.questionId`}
+                      rules={{ required: question.required }}
+                      render={({ field }) => (
+                        <RatingControl
+                          key={index}
+                          attributes={question.attributes as { min: number; max: number }}
+                          onValueChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </FormControl>
+                );
+              default:
+                return null;
+            }
+          })}
 
-          <FormControl mt="30px">
-            <FormLabel htmlFor="rating">How would you rate the film?</FormLabel>
-            <Input
-              {...register('rating', {
-                required: 'Rating field must not be empty!',
-              })}
-            />
-          </FormControl>
-
-          <HorizontalLine mt="50px" mb="30px" />
+          <HorizontalLine my="30px" />
           <ButtonGroup w="100%" justifyContent="center">
             <Button type="submit" w={['100%', '75%', '50%']} colorScheme="blue">
               Submit

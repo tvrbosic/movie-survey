@@ -9,10 +9,10 @@ export interface IContainerPaddings {
 
 export interface ISurveyQuestion {
   questionId: string;
-  questionType: string;
+  questionType: 'text' | 'rating';
   label: string;
   required: boolean;
-  attributes: Object;
+  attributes: Object | null;
 }
 
 export interface ISurvey {
