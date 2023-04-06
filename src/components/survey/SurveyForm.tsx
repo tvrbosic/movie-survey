@@ -14,6 +14,7 @@ export default function SurveyForm() {
     handleSubmit,
     control,
     formState: { errors },
+    getValues,
   } = useForm<ISurveyQuestion[]>();
   const { data, isLoading, isError, sendRequest } = useFetchData<ISurvey>();
 
@@ -41,6 +42,17 @@ export default function SurveyForm() {
 
           {data.data.attributes.questions.map((question, index) => {
             switch (question.questionType) {
+              case 'text':
+                return (
+                  <FormControl key={index} mb="20px">
+                    <FormLabel htmlFor={question.questionId}>{question.label}</FormLabel>
+                    <Input
+                      {...register(`${index}.questionId`, { required: true })}
+                      type="text"
+                      placeholder="Enter your answer"
+                    />
+                  </FormControl>
+                );
               case 'rating':
                 return (
                   <FormControl key={index} mb="20px">
@@ -53,19 +65,9 @@ export default function SurveyForm() {
                         <RatingControl
                           key={index}
                           attributes={question.attributes as { min: number; max: number }}
+                          onValueChange={field.onChange}
                         />
                       )}
-                    />
-                  </FormControl>
-                );
-              case 'text':
-                return (
-                  <FormControl key={index} mb="20px">
-                    <FormLabel htmlFor={question.questionId}>{question.label}</FormLabel>
-                    <Input
-                      {...register(`${index}.questionId`, { required: true })}
-                      type="text"
-                      placeholder="Enter your answer"
                     />
                   </FormControl>
                 );
@@ -74,7 +76,7 @@ export default function SurveyForm() {
             }
           })}
 
-          <HorizontalLine mt="50px" mb="30px" />
+          <HorizontalLine my="30px" />
           <ButtonGroup w="100%" justifyContent="center">
             <Button type="submit" w={['100%', '75%', '50%']} colorScheme="blue">
               Submit
