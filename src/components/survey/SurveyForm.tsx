@@ -6,10 +6,6 @@ import {
   FormErrorMessage,
   ButtonGroup,
   Button,
-  Center,
-  VStack,
-  Text,
-  Spinner,
 } from '@chakra-ui/react';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -18,6 +14,7 @@ import { ISurvey, ISurveyForm } from 'ts/definitions';
 import FormHeader from 'components/survey/FormHeader';
 import RatingControl from 'components/survey/RatingControl';
 import HorizontalLine from 'components/HorizontalLine';
+import SurveyLoading from 'components/survey/SurveyLoading';
 
 export default function SurveyForm() {
   const {
@@ -26,7 +23,7 @@ export default function SurveyForm() {
     control,
     formState: { errors },
   } = useForm<ISurveyForm>();
-  const { data, isFetching, isError, sendRequest } = useFetchData<ISurvey>();
+  const { data, isError, sendRequest } = useFetchData<ISurvey>();
 
   useEffect(() => {
     sendRequest('/api/v1/survey');
@@ -119,20 +116,7 @@ export default function SurveyForm() {
           </ButtonGroup>
         </form>
       ) : (
-        <Center minHeight={'50vh'}>
-          <VStack>
-            <Text fontSize="lg" fontStyle="italic" fontWeight="bold" color="gray.500" mb={'20px'}>
-              Loading survey ...
-            </Text>
-            <Spinner
-              thickness="4px"
-              speed="0.65s"
-              emptyColor="gray.300"
-              color="green.200"
-              size="xl"
-            />
-          </VStack>
-        </Center>
+        <SurveyLoading />
       )}
     </>
   );
