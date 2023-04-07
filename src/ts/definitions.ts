@@ -20,6 +20,7 @@ export interface ISurveyQuestion {
 
 export interface ISurvey {
   data: {
+    id: string;
     attributes: {
       title: string;
       description: string;
