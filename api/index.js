@@ -1,8 +1,7 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 
 const PORT = process.env.PORT || 3001;
+const MOCK_LATENCY = process.env.MOCK_LATENCY || 500;
 const app = express();
 
 const surveyMockData = {
@@ -49,7 +48,11 @@ const internalServerErrorResponse = (res) => {
 app.get('/api/v1/survey', (req, res) => {
   // Mock error response
   // internalServerErrorResponse(res);
-  return res.json(surveyMockData);
+
+  // Mock latency
+  setTimeout(function () {
+    return res.json(surveyMockData);
+  }, MOCK_LATENCY);
 });
 
 app.listen(PORT, () => {

@@ -7,13 +7,13 @@ import axios from 'axios';
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 export function useFetchData<Type>() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [data, setData] = useState<Type | null>(null);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<any | null>(null);
 
   const sendRequest = useCallback((path: string) => {
-    setIsLoading(true);
+    setIsFetching(true);
 
     axios
       .get<Type | null>(path)
@@ -29,12 +29,12 @@ export function useFetchData<Type>() {
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsFetching(false);
       });
   }, []);
 
   return {
-    isLoading,
+    isFetching,
     data,
     isError,
     error,

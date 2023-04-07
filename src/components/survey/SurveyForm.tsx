@@ -6,6 +6,10 @@ import {
   FormErrorMessage,
   ButtonGroup,
   Button,
+  Center,
+  VStack,
+  Text,
+  Spinner,
 } from '@chakra-ui/react';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -22,7 +26,7 @@ export default function SurveyForm() {
     control,
     formState: { errors },
   } = useForm<ISurveyForm>();
-  const { data, isLoading, isError, sendRequest } = useFetchData<ISurvey>();
+  const { data, isFetching, isError, sendRequest } = useFetchData<ISurvey>();
 
   useEffect(() => {
     sendRequest('/api/v1/survey');
@@ -36,17 +40,19 @@ export default function SurveyForm() {
     console.log(formData);
   };
 
+  const renderContent = data && !isError;
+
   return (
     <>
-      {data && (
+      {renderContent ? (
         <form onSubmit={handleSubmit(submitData)}>
           <FormHeader
-            title={data.data.attributes.title}
-            description={data.data.attributes.description}
+            title={data!.data.attributes.title}
+            description={data!.data.attributes.description}
           />
           <HorizontalLine my="30px" />
 
-          {data.data.attributes.questions.map((question, index) => {
+          {data!.data.attributes.questions.map((question, index) => {
             switch (question.questionType) {
               case 'text':
                 return (
@@ -112,6 +118,21 @@ export default function SurveyForm() {
             </Button>
           </ButtonGroup>
         </form>
+      ) : (
+        <Center minHeight={'50vh'}>
+          <VStack>
+            <Text fontSize="lg" fontStyle="italic" fontWeight="bold" color="gray.500" mb={'20px'}>
+              Loading survey ...
+            </Text>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.300"
+              color="green.200"
+              size="xl"
+            />
+          </VStack>
+        </Center>
       )}
     </>
   );
