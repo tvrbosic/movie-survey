@@ -1,9 +1,11 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const { v4: uuid4 } = require('uuid');
 
 const PORT = process.env.PORT || 3001;
-const MOCK_LATENCY = process.env.MOCK_LATENCY || 500;
+
 const app = express();
+app.use(bodyParser.json());
 
 const surveyMockData = {
   data: {
@@ -48,16 +50,71 @@ const internalServerErrorResponse = (res) => {
   });
 };
 
-app.get('/api/v1/survey', (req, res) => {
-  // Mock error response
-  // internalServerErrorResponse(res);
+const validateAnswers = (answers) => {
+  const errors = [];
 
-  // Mock latency
-  setTimeout(function () {
-    const responseData = surveyMockData;
-    responseData.data.id = uuid4();
-    return res.json(surveyMockData);
-  }, MOCK_LATENCY);
+  for (const answer of answers) {
+    if (!answer.answer) {
+      errors.push({
+        source: `data/attributes/answers/${answer.questionId}`,
+        detail: 'The value is required',
+      });
+    }
+  }
+
+  return errors;
+};
+
+app.get('/api/v1/survey', (req, res) => {
+  const responseData = surveyMockData;
+  responseData.data.id = uuid4();
+
+  // Mock HTTP 500 error response by uncommenting the following line
+  // internalServerErrorResponse(res);
+  return res.json(surveyMockData);
+});
+
+app.post('/api/v1/survey/:id/answers', (req, res) => {
+  const surveyId = req.params.id;
+  const surveyAnswers = req.body.data.attributes.answers;
+
+  // Received data validation
+  const errors = validateAnswers(surveyAnswers);
+  if (errors.length > 0) {
+    res.status(422).json({ errors: errors });
+    return;
+  }
+
+  // Data processing and storing to database
+  // ...
+
+  const response = {
+    data: {
+      type: 'surveyAnswers',
+      id: surveyId,
+      attributes: {
+        answers: surveyAnswers,
+      },
+      relationships: {
+        survey: {
+          data: {
+            type: 'surveys',
+            id: surveyId,
+          },
+        },
+      },
+    },
+  };
+
+  // Mock HTTP 500 error response by uncommenting the following line
+  // internalServerErrorResponse(res);
+  res.status(201).json(response);
+});
+
+// Error handling middleware (covers all unhandled errors)
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  internalServerErrorResponse(res);
 });
 
 app.listen(PORT, () => {
