@@ -1,4 +1,5 @@
 const express = require('express');
+const { v4: uuid4 } = require('uuid');
 
 const PORT = process.env.PORT || 3001;
 const MOCK_LATENCY = process.env.MOCK_LATENCY || 500;
@@ -7,6 +8,8 @@ const app = express();
 const surveyMockData = {
   data: {
     type: 'surveys',
+    // Following attribute is mocked by dynamically generating it on every request
+    // id: '2660dd24-e2db-42c1-8093-284b1df2664c'
     attributes: {
       title: 'Film feedback form',
       description:
@@ -51,6 +54,8 @@ app.get('/api/v1/survey', (req, res) => {
 
   // Mock latency
   setTimeout(function () {
+    const responseData = surveyMockData;
+    responseData.data.id = uuid4();
     return res.json(surveyMockData);
   }, MOCK_LATENCY);
 });
