@@ -69,6 +69,9 @@ app.get('/api/v1/survey', (req, res) => {
   const responseData = surveyMockData;
   responseData.data.id = uuid4();
 
+  // Data fetching from database and processing
+  // ... implement here ...
+
   // Mock HTTP 500 error response by uncommenting the following line
   // internalServerErrorResponse(res);
   return res.json(surveyMockData);
@@ -86,7 +89,7 @@ app.post('/api/v1/survey/:id/answers', (req, res) => {
   }
 
   // Data processing and storing to database
-  // ...
+  // ... implement here ...
 
   const response = {
     data: {
