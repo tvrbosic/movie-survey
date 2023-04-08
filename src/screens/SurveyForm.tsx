@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   FormControl,
   FormLabel,
@@ -9,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useForm, Controller } from 'react-hook-form';
 
+import routes from 'router/routes';
 import { useGetData } from 'hooks/useGetData';
 import { usePostData } from 'hooks/usePostData';
 import { ISurvey, ISurveyForm } from 'ts/definitions';
@@ -26,27 +28,23 @@ export default function SurveyForm() {
   } = useForm<ISurveyForm>();
   const { data, isError: isGetError, error: getError, sendGetRequest } = useGetData<ISurvey>();
   const { response, isError: isPostError, error: postError, sendPostRequest } = usePostData();
+  const navigate = useNavigate();
 
   useEffect(() => {
     sendGetRequest('/api/v1/survey');
   }, [sendGetRequest]);
 
   useEffect(() => {
-    console.log('Response: ');
-    console.log(response);
-    // TODO: Handle success, redirect to success page
-  }, [response]);
+    if (response) {
+      navigate(routes.success.path, { state: { response, success: true } });
+    }
+  }, [response, navigate]);
 
   useEffect(() => {
-    if (isGetError) {
-      console.log('Error: ');
-      console.log(getError);
-    } else if (isPostError) {
-      console.log('Error: ');
-      console.log(postError);
+    if (isGetError || isPostError) {
+      navigate(routes.error.path);
     }
-    // TODO: Handle error, redirect to error page
-  }, [isGetError, isPostError, getError, postError]);
+  }, [isGetError, isPostError, getError, postError, navigate]);
 
   const submitData = (formData: any) => {
     sendPostRequest(`/api/v1/survey/${data?.data.id}/answers`, {
