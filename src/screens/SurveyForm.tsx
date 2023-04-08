@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   FormControl,
   FormLabel,
@@ -9,11 +10,14 @@ import {
 } from '@chakra-ui/react';
 import { useForm, Controller } from 'react-hook-form';
 
-import { useFetchData } from 'hooks/useFetchData';
+import routes from 'router/routes';
+import { useGetData } from 'hooks/useGetData';
+import { usePostData } from 'hooks/usePostData';
 import { ISurvey, ISurveyForm } from 'ts/definitions';
 import FormHeader from 'components/survey/FormHeader';
 import RatingControl from 'components/survey/RatingControl';
 import HorizontalLine from 'components/HorizontalLine';
+import SurveyLoading from 'components/survey/SurveyLoading';
 
 export default function SurveyForm() {
   const {
@@ -22,31 +26,53 @@ export default function SurveyForm() {
     control,
     formState: { errors },
   } = useForm<ISurveyForm>();
-  const { data, isLoading, isError, sendRequest } = useFetchData<ISurvey>();
+  const { data, isError: isGetError, error: getError, sendGetRequest } = useGetData<ISurvey>();
+  const { response, isError: isPostError, error: postError, sendPostRequest } = usePostData();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    sendRequest('/api/v1/survey');
-  }, [sendRequest]);
+    sendGetRequest('/api/v1/survey');
+  }, [sendGetRequest]);
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
+    if (response) {
+      navigate(routes.success.path, { state: { response, success: true } });
+    }
+  }, [response, navigate]);
+
+  useEffect(() => {
+    if (isGetError || isPostError) {
+      navigate(routes.error.path);
+    }
+  }, [isGetError, isPostError, getError, postError, navigate]);
 
   const submitData = (formData: any) => {
-    console.log(formData);
+    sendPostRequest(`/api/v1/survey/${data?.data.id}/answers`, {
+      data: {
+        type: 'surveyAnswers',
+        attributes: {
+          answers: Object.entries(formData).map(([questionId, answer]) => ({
+            questionId,
+            answer,
+          })),
+        },
+      },
+    });
   };
+
+  const renderContent = data && !isGetError;
 
   return (
     <>
-      {data && (
+      {renderContent ? (
         <form onSubmit={handleSubmit(submitData)}>
           <FormHeader
-            title={data.data.attributes.title}
-            description={data.data.attributes.description}
+            title={data!.data.attributes.title}
+            description={data!.data.attributes.description}
           />
           <HorizontalLine my="30px" />
 
-          {data.data.attributes.questions.map((question, index) => {
+          {data!.data.attributes.questions.map((question, index) => {
             switch (question.questionType) {
               case 'text':
                 return (
@@ -112,6 +138,8 @@ export default function SurveyForm() {
             </Button>
           </ButtonGroup>
         </form>
+      ) : (
+        <SurveyLoading />
       )}
     </>
   );

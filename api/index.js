@@ -1,13 +1,17 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const bodyParser = require('body-parser');
+const { v4: uuid4 } = require('uuid');
 
 const PORT = process.env.PORT || 3001;
+
 const app = express();
+app.use(bodyParser.json());
 
 const surveyMockData = {
   data: {
     type: 'surveys',
+    // Following attribute is mocked by dynamically generating it on every request
+    // id: '2660dd24-e2db-42c1-8093-284b1df2664c'
     attributes: {
       title: 'Film feedback form',
       description:
@@ -46,10 +50,74 @@ const internalServerErrorResponse = (res) => {
   });
 };
 
+const validateAnswers = (answers) => {
+  const errors = [];
+
+  for (const answer of answers) {
+    if (!answer.answer) {
+      errors.push({
+        source: `data/attributes/answers/${answer.questionId}`,
+        detail: 'The value is required',
+      });
+    }
+  }
+
+  return errors;
+};
+
 app.get('/api/v1/survey', (req, res) => {
-  // Mock error response
+  const responseData = surveyMockData;
+  responseData.data.id = uuid4();
+
+  // Data fetching from database and processing
+  // ... implement here ...
+
+  // Mock HTTP 500 error response by uncommenting the following line
   // internalServerErrorResponse(res);
   return res.json(surveyMockData);
+});
+
+app.post('/api/v1/survey/:id/answers', (req, res) => {
+  const surveyId = req.params.id;
+  const surveyAnswers = req.body.data.attributes.answers;
+
+  // Received data validation
+  const errors = validateAnswers(surveyAnswers);
+  if (errors.length > 0) {
+    res.status(422).json({ errors: errors });
+    return;
+  }
+
+  // Data processing and storing to database
+  // ... implement here ...
+
+  const response = {
+    data: {
+      type: 'surveyAnswers',
+      id: surveyId,
+      attributes: {
+        answers: surveyAnswers,
+      },
+      relationships: {
+        survey: {
+          data: {
+            type: 'surveys',
+            id: surveyId,
+          },
+        },
+      },
+    },
+  };
+
+  // Mock HTTP 500 error response by uncommenting the following line
+  // internalServerErrorResponse(res);
+  res.status(201).json(response);
+});
+
+// Error handling middleware (covers all unhandled errors)
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  internalServerErrorResponse(res);
 });
 
 app.listen(PORT, () => {

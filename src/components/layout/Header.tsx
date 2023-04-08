@@ -1,5 +1,7 @@
+import { useNavigate } from 'react-router-dom';
 import { Flex, FlexProps, Image, Heading } from '@chakra-ui/react';
 
+import routes from 'router/routes';
 import { IContainerPaddings } from 'ts/definitions';
 import LogoIpsum from 'assets/images/logo-ipsum.svg';
 
@@ -8,6 +10,8 @@ interface HeaderProps extends FlexProps {
 }
 
 function Header({ paddings, ...rest }: HeaderProps) {
+  const navigate = useNavigate();
+
   return (
     <Flex flexDirection="column" bgGradient="linear(to-r, green.200, cyan.200)" {...rest}>
       <Flex
@@ -24,6 +28,8 @@ function Header({ paddings, ...rest }: HeaderProps) {
           src={LogoIpsum}
           objectFit="contain"
           alt="Logo ipsum"
+          _hover={{ cursor: 'pointer' }}
+          onClick={() => navigate(routes.root.path)}
         />
         <Heading as="h1" size={['md', 'sm']} color="gray.700" textAlign="center" mt={['20px', 0]}>
           Online Survey

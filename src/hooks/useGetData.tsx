@@ -1,19 +1,14 @@
 import { useCallback, useState } from 'react';
 import axios from 'axios';
 
-//import { IHttpError } from '../ts/definitions';
-
-// Configuration
-axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-
-export function useFetchData<Type>() {
-  const [isLoading, setIsLoading] = useState(false);
+export function useGetData<Type>() {
+  const [isFetching, setIsFetching] = useState(false);
   const [data, setData] = useState<Type | null>(null);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<any | null>(null);
 
-  const sendRequest = useCallback((path: string) => {
-    setIsLoading(true);
+  const sendGetRequest = useCallback((path: string) => {
+    setIsFetching(true);
 
     axios
       .get<Type | null>(path)
@@ -29,15 +24,15 @@ export function useFetchData<Type>() {
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsFetching(false);
       });
   }, []);
 
   return {
-    isLoading,
+    isFetching,
     data,
     isError,
     error,
-    sendRequest,
+    sendGetRequest,
   };
 }
