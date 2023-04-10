@@ -1,10 +1,21 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const { v4: uuid4 } = require('uuid');
+require('dotenv').config();
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+
+// Enable CORS middleware
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+  })
+);
+
+// Body parser middleware
 app.use(bodyParser.json());
 
 const surveyMockData = {
