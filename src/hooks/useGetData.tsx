@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 import axios from 'axios';
 
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+
 export function useGetData<Type>() {
   const [isFetching, setIsFetching] = useState(false);
   const [data, setData] = useState<Type | null>(null);

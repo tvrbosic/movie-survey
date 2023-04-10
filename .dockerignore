@@ -1,0 +1,11 @@
+api/
+**/node_modules/
+build/
+.github/
+.vscode/
+.gitignore
+.prettierignore
+.prettierrc
+LICENSE
+README.md
+vercel.json

@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 import axios from 'axios';
 
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+
 export function usePostData<Type>() {
   const [isPosting, setIsPosting] = useState(false);
   const [response, setResponse] = useState<Type | null>(null);
