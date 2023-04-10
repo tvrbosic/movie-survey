@@ -11,6 +11,35 @@ Application is deployed with [Vercel](https://vercel.com) and can be tested on f
 3. Enter api folder and install backend npm packages: `cd api/ && npm install`
 4. Back to root folder and run npm script to start both frontend and backend: `cd .. && npm run dev`
 
+# Running with Docker
+
+1. Clone repository: `git clone git@github.com:tvrbosic/movie-survey.git`
+2. Position yourself to project root folder: `cd movie-survey`
+3. Build docker images:
+   - `sudo docker build api/ -t movie-survey-api `
+   - `sudo docker build . -t movie-survey-ui`
+4. Run docker containers:
+   - `sudo docker run -p 3001:3001 --env-file ./.env movie-survey-api`
+   - `sudo docker run -p 3000:3000 movie-survey-ui`
+
+# Environment files
+
+## React application
+
+```
+# Set API URL
+REACT_APP_API_URL=http://localhost:3001/
+```
+
+## Express API application
+
+```
+# Set listening port
+PORT=3002
+# Cross-origin resource sharing whitelist
+CORS_ORIGIN="http://localhost:3000"
+```
+
 # Packages used
 
 - [Chakra UI v2.5](https://chakra-ui.com/)
