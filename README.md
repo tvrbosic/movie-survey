@@ -19,25 +19,27 @@ Application is deployed with [Vercel](https://vercel.com) and can be tested on f
    - `sudo docker build api/ -t movie-survey-api `
    - `sudo docker build . -t movie-survey-ui`
 4. Run docker containers:
-   - `sudo docker run -p 3001:3001 --env-file ./.env movie-survey-api`
+   - `sudo docker run -p 3001:3001 movie-survey-api`
    - `sudo docker run -p 3000:3000 movie-survey-ui`
+
+# Running with Docker compose
+
+1. Clone repository: `git clone git@github.com:tvrbosic/movie-survey.git`
+2. Position yourself to project root folder: `cd movie-survey`
+3. Run docker-compose: `sudo docker-compose up`
 
 # Environment files
 
-## React application
+## env
 
 ```
-# Set API URL
 REACT_APP_API_URL=http://localhost:3001/
 ```
 
-## Express API application
+## env.production
 
 ```
-# Set listening port
-PORT=3002
-# Cross-origin resource sharing whitelist
-CORS_ORIGIN="http://localhost:3000"
+REACT_APP_API_URL=https://movie-survey.vercel.app/
 ```
 
 # Packages used
